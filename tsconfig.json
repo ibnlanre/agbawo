@@ -1,0 +1,7 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "noLib": false,
+    "target": "ES5"
+  }
+}
