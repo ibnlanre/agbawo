@@ -32,8 +32,8 @@ npm i @ibnlanre/agbawo
 ## API
 
 ```javascript
-// As a Script
-<script src="./node_modules/@ibnlanre/weight.js"></script>
+// Browser
+<script src="https://unpkg.com/@ibnlanre/agbawo@1.0.0/Agbawo.min.js"></script>
 
 // ES6 Import
 import Agbawo from "@ibnlanre/agbawo"; //-> default | object
