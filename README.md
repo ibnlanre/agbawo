@@ -33,7 +33,7 @@ npm i @ibnlanre/agbawo
 
 ```javascript
 // Browser
-<script src="https://unpkg.com/@ibnlanre/agbawo@1.0.0/Agbawo.min.js"></script>
+<script src="https://unpkg.com/@ibnlanre/agbawo@latest/Agbawo.min.js"></script>
 
 // ES6 Import
 import Agbawo from "@ibnlanre/agbawo"; //-> default | object
