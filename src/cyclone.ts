@@ -2,7 +2,10 @@ import { fnStr } from "./jsonify";
 
 function reflect(obj, newObj, cyclic) {
   let eachKey = (key) => {
-    let descriptor = Object.getOwnPropertyDescriptor(newObj, key);
+    let descriptor = Object.getOwnPropertyDescriptor(
+      newObj,
+      key
+    ) as PropertyDescriptor; 
     if (!(key in newObj) || descriptor.writable) {
       newObj[key] = Array.isArray(obj[key])
         ? obj[key].map((e) => clone(e, cyclic))

@@ -1,15 +1,15 @@
-# Àgbáwo [ The Old One ]
+# Àgbawo [ The Old One ]
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 [![build status](https://img.shields.io/travis/ibnlanre/Agbawo.svg)](https://travis-ci.org/ibnlanre/Agbawo)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-f8bc45.svg)](https://github.com/prettier/prettier)
-![version](https://img.shields.io/badge/version-1.0.0-blue) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
-[![Twitter](https://img.shields.io/twitter/follow/ibnlanre?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=ibnlanre)
+![version](https://img.shields.io/badge/version-1.0.1-blue) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+<!-- [![Twitter](https://img.shields.io/twitter/follow/ibnlanre?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=ibnlanre) -->
 
 ---
 
-Àgbáwo is a Yorùbá name that means an Old-timer, a veteran at best. It is used to compliment or praise a person who has had long service or experience in a particular field. Àgbáwo was written to pay respects to a JavaScript Icon, [Douglas Crockford](https://en.wikipedia.org/wiki/Douglas_Crockford), who first specified and popularized the [JSON](https://en.wikipedia.org/wiki/JSON) format.
+Àgbawo is a Yorùbá name that means an Old-timer, a veteran at best. It is used to compliment or praise a person who has had long service or experience in a particular field. Àgbawo was written to pay respects to a JavaScript Icon, [Douglas Crockford](https://en.wikipedia.org/wiki/Douglas_Crockford), who first specified and popularized the [JSON](https://en.wikipedia.org/wiki/JSON) format.
 
 ---
 

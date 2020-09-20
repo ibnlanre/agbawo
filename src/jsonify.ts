@@ -9,7 +9,7 @@ import {
 
 const reStr = (re) => `/${re.source}/${/\w+$/.exec(re) || ""}`;
 export const trim = (value) => value.replace(/"/g, "").substring(4);
-export const fnStr = (fn) => (fn.name ? fn.name + "=" : "") + fn.toString();
+export const fnStr = (fn) => (fn.name ? fn.name + "=" : "") + fn;
 
 export const generateReplacer = function (replacer) {
   if (typeof replacer !== "function") {
@@ -55,14 +55,18 @@ export function stringify(obj, replacer?, space?) {
 
 export function parse(str, reviver?) {
   let iso8061 = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/;
-  const revive = function (key, value) {
-    if (typeof value != "string") return value;
-    if (value.match(iso8061)) return new Date(value);
-    if (value.startsWith("_fn_") || value.startsWith("_re_"))
-      return new Function(`return ${trim(value)}`)();
-    if (value.startsWith("_sm_"))
-      return Symbol.for(`${/\((\w+)\)/.exec(trim(value))[1]}`);
-    return value;
-  };
-  return JSON.parse(str, reviver || revive);
+  try {
+    const revive = function (key, value) {
+      if (typeof value != "string") return value;
+      if (value.match(iso8061)) return new Date(value);
+      if (value.startsWith("_fn_") || value.startsWith("_re_"))
+        return new Function(`return ${trim(value)}`)();
+      if (value.startsWith("_sm_"))
+        return Symbol.for(`${/\((\w+)\)/.exec(trim(value))[1]}`);
+      return value;
+    };
+    return JSON.parse(str, reviver || revive);
+  } catch (err) {
+    console.log(err)
+  }
 }

@@ -43,7 +43,7 @@
 
     var reStr = function (re) { return "/" + re.source + "/" + (/\w+$/.exec(re) || ""); };
     var trim = function (value) { return value.replace(/"/g, "").substring(4); };
-    var fnStr = function (fn) { return (fn.name ? fn.name + "=" : "") + fn.toString(); };
+    var fnStr = function (fn) { return (fn.name ? fn.name + "=" : "") + fn; };
     var generateReplacer = function (replacer) {
         if (typeof replacer !== "function") {
             return replacer;
