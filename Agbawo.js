@@ -1,5 +1,5 @@
 /*!
- * Àgbawo-1.0.3
+ * Àgbawo-1.0.4
  * Copyright (c) 2020 Ridwan Olanrewaju.
  * Licensed under the MIT license.
  */
@@ -326,7 +326,7 @@
                 return;
             delete item[name];
         });
-        Object.entries(opts.restock).reduce(induce, item);
+        Object.entries(opts.restock || {}).reduce(induce, item);
         return item;
     }
 

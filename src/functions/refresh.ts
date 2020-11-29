@@ -10,6 +10,6 @@ export default function (item, options = {}) {
     if (opts.retain.includes(name)) return
     delete item[name];
   });
-  Object.entries(opts.restock).reduce(induce, item);
+  Object.entries(opts.restock || {}).reduce(induce, item);
   return item;
 }
