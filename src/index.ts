@@ -18,12 +18,6 @@ export default {
   stringify,
   parse,
   inspect,
-  /**
-   * @description replaces an object's items without changing the reference
-   * @example
-   * //→ { 'colors.purple': 'bg-purple-500' }
-   * memoize({ color: "pink" }, { "colors.purple": "bg-purple-500" })
-   */
   memoize,
   /**
    * @description flattens an object separating its key with dots
