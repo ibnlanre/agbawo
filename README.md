@@ -4,7 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 [![build status](https://img.shields.io/travis/ibnlanre/Agbawo.svg)](https://travis-ci.org/ibnlanre/Agbawo)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-f8bc45.svg)](https://github.com/prettier/prettier)
-![version](https://img.shields.io/badge/version-1.0.1-blue) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+![version](https://img.shields.io/badge/version-1.0.2-blue) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Twitter](https://img.shields.io/twitter/follow/ibnlanre?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=ibnlanre)
 
 ---

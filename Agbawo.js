@@ -1,7 +1,7 @@
 /*!
- * Àgbawo-1.0.1 (2020) MIT
- * (c) Ridwan Olanrewaju 
- * @ibnlanre
+ * Àgbawo-1.0.2
+ * Copyright (c) 2020 Ridwan Olanrewaju.
+ * Licensed under the MIT license.
  */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -278,19 +278,20 @@
         return recycle(parse(text, generateReviver(reviver)));
     }
 
-    function memoize (passedFn) {
+    var areTheyEqual = function (newInputs, lastInputs) {
+        if (newInputs.length !== lastInputs.length)
+            return false;
+        for (var i = 0; i < newInputs.length; i++)
+            if (newInputs[i] !== lastInputs[i])
+                return false;
+        return true;
+    };
+    function memoize (passedFn, isEqual) {
+        if (isEqual === void 0) { isEqual = areTheyEqual; }
         var lastThis;
         var lastArgs = [];
         var lastResult;
         var calledOnce = false;
-        var isEqual = function (newInputs, lastInputs) {
-            if (newInputs.length !== lastInputs.length)
-                return false;
-            for (var i = 0; i < newInputs.length; i++)
-                if (newInputs[i] !== lastInputs[i])
-                    return false;
-            return true;
-        };
         function memo() {
             var _a;
             var newArgs = [];
@@ -307,12 +308,20 @@
         return memo;
     }
 
-    function restock (item, slot) {
+    function restock (item, slot, options) {
+        if (options === void 0) { options = {}; }
+        var opts = Object.assign({ exclude: [], only: [] }, options);
         var induce = function (acc, _a) {
             var name = _a[0], value = _a[1];
             return ((acc[name] = value), acc);
         };
-        Object.keys(item).forEach(function (name) { return delete item[name]; });
+        Object.keys(item).forEach(function (name) {
+            if (opts.only.length)
+                opts.only.includes(name) ? delete item[name] : "";
+            if (opts.exclude.includes(name))
+                return;
+            delete item[name];
+        });
         Object.entries(slot).reduce(induce, item);
         return item;
     }
@@ -380,12 +389,6 @@
         stringify: stringify$1,
         parse: parse$1,
         inspect: inspect,
-        /**
-         * @description replaces an object's items without changing the reference
-         * @example
-         * //→ { 'colors.purple': 'bg-purple-500' }
-         * memoize({ color: "pink" }, { "colors.purple": "bg-purple-500" })
-         */
         memoize: memoize,
         /**
          * @description flattens an object separating its key with dots

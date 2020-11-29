@@ -1,6 +1,6 @@
 {
   "name": "@ibnlanre/agbawo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The Swiss-Army knife for working with JS Objects",
   "main": "Agbawo.js",
   "scripts": {
