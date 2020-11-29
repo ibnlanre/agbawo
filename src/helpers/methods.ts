@@ -1,5 +1,3 @@
-export {};
-
 export const shouldPassThrough = function (value) {
   return (
     typeof value !== "object" ||
@@ -14,6 +12,7 @@ export const shouldPassThrough = function (value) {
 };
 
 export const specialChar = "~";
+
 export const isSpecialLiteral = function (value) {
   return (
     typeof value === "string" && value.indexOf(specialChar + specialChar) === 0
@@ -38,7 +37,16 @@ export const trimSpecialChar = function (value) {
   return value.slice(1);
 };
 
-export const walker = (obj) =>
-  Reflect.ownKeys(Object.getPrototypeOf(obj))
-    .concat(Reflect.ownKeys(obj))
-    .reduce((a, e) => ((a[e] = obj[e]), a), {});
+export const type = function (e, what: string) {
+  return e?.constructor.name === what;
+};
+
+export const hydrate = function ([name, value]: [name: string, value: any]) {
+  return name
+    .split(/\b\.\b/)
+    .reduceRight((set, curr) => ({ [curr]: set }), value);
+};
+
+export const filter = function (es: (string | object)[], what: string): any[] {
+  return es.filter((e) => type(e, what));
+};

@@ -5,11 +5,11 @@ import {
   isSpecialLiteral,
   shouldPassThrough,
   trimSpecialChar,
-} from "./oracle";
+} from "./methods";
 
 import { trim } from "./jsonify";
 
-let recycle = function (master) {
+export default function (master) {
   let walk = function (current, key?, parent?) {
     let modified = current;
     let index;
@@ -56,5 +56,3 @@ let recycle = function (master) {
 
   return walk(master.main);
 };
-
-export default recycle;

@@ -1,4 +1,4 @@
-import { fnStr } from "./jsonify";
+import { fnStr } from "../helpers/jsonify";
 
 function reflect(obj, newObj, cyclic) {
   let eachKey = (key) => {

@@ -1,7 +1,7 @@
 {
   "name": "@ibnlanre/agbawo",
-  "version": "1.0.0",
-  "description": "Clone anything and everything, well somewhat",
+  "version": "1.0.1",
+  "description": "The Swiss-Army knife for working with JS Objects",
   "main": "Agbawo.js",
   "scripts": {
     "build": "rollup -c",

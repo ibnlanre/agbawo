@@ -1,5 +1,11 @@
 import { terser } from "rollup-plugin-terser";
 import typescript from "@rollup/plugin-typescript";
+const banner = `/*!
+ * Àgbawo-1.0.1 (2020) MIT
+ * (c) Ridwan Olanrewaju 
+ * @ibnlanre
+ */`
+
 export default {
   input: "src/index.ts",
   output: [
@@ -7,19 +13,13 @@ export default {
       file: "Agbawo.js",
       format: "umd",
       name: "Agbawo",
-      banner: `/*!
- * Àgbáwo-1.0.0
- * (c) Ridwan Olanrewaju (2020) MIT
- */`,
+      banner,
     },
     {
       file: "Agbawo.min.js",
       format: "umd",
       name: "Agbawo",
-      banner: `/*!
- * Àgbáwo-1.0.0
- * (c) Ridwan Olanrewaju (2020) MIT
- */`,
+      banner,
       plugins: [terser()],
     },
   ],

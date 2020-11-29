@@ -1,5 +1,3 @@
-export { };
-
 class Epicycle {
   keys: any[];
   values: any[];

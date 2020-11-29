@@ -1,9 +1,9 @@
 export {};
 
-import { specialChar, shouldPassThrough, escapeSpecialChar } from "./oracle";
+import { specialChar, shouldPassThrough, escapeSpecialChar } from "./methods";
 import Epicycle from "./epicycle";
 
-let decycle = function (base) {
+export default function (base) {
   let legend = [];
   let epicycle = new Epicycle();
   let walk = function (current, path) {
@@ -26,9 +26,8 @@ let decycle = function (base) {
         );
       }
     }
-    if (typeof current === "string") {
+    if (typeof current === "string")
       modified = escapeSpecialChar(current);
-    }
     return modified;
   };
   return {
@@ -36,5 +35,3 @@ let decycle = function (base) {
     main: walk(base, []),
   };
 };
-
-export default decycle;

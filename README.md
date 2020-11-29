@@ -5,7 +5,7 @@
 [![build status](https://img.shields.io/travis/ibnlanre/Agbawo.svg)](https://travis-ci.org/ibnlanre/Agbawo)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-f8bc45.svg)](https://github.com/prettier/prettier)
 ![version](https://img.shields.io/badge/version-1.0.1-blue) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
-<!-- [![Twitter](https://img.shields.io/twitter/follow/ibnlanre?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=ibnlanre) -->
+[![Twitter](https://img.shields.io/twitter/follow/ibnlanre?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=ibnlanre)
 
 ---
 
@@ -19,11 +19,12 @@
 
 ---
 
-Clone anything and everything, well somewhat
+The Swiss-Army knife for working with JS Objects
 
 ```markdown
 - Cyclic-enabled
 - Really Fast
+- Heavily Tested
 - Browser-compatible
 - No Dependencies
 - No Eval
@@ -47,12 +48,12 @@ import { stringify, parse, clone } from "@ibnlanre/agbawo";
 
 // NodeJS Require
 const { clone } = require("@ibnlanre/agbawo");
-const walker = require("@ibnlanre/agbawo").walker;
+const inspect = require("@ibnlanre/agbawo").inspect;
 
 // Walkthrough
 stringify(object); //-> cyclic object/symbol support
 parse(stringify, replacer); //!-> it replaces the default
-walker(object); //-> a shallow tree walker
+inspect(object); //-> a shallow tree walker
 ```
 
 ## JSON Methods
@@ -256,3 +257,4 @@ console.log(clone(a) === a); //-> true
 - [Louis Buchbinder](https://github.com/louisbuchbinder) -> [cyclical-json](https://github.com/louisbuchbinder/cyclical-json)
 - [Royaltm](https://github.com/royaltm) -> [function cloning](https://stackoverflow.com/questions/1833588/javascript-clone-a-function)
 - [Vadim Kiryukhin](https://github.com/vkiryukhin) -> [json-fn](https://github.com/vkiryukhin/jsonfn)
+- [Alex Reardon](https://github.com/alexreardon) -> [memoize-one](https://github.com/alexreardon/memoize-one)

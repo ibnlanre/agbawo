@@ -1,6 +1,7 @@
 /*!
- * Àgbáwo-1.0.0
- * (c) Ridwan Olanrewaju (2020) MIT
+ * Àgbawo-1.0.1 (2020) MIT
+ * (c) Ridwan Olanrewaju 
+ * @ibnlanre
  */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -35,10 +36,20 @@
     var trimSpecialChar = function (value) {
         return value.slice(1);
     };
-    var walker = function (obj) {
-        return Reflect.ownKeys(Object.getPrototypeOf(obj))
-            .concat(Reflect.ownKeys(obj))
-            .reduce(function (a, e) { return ((a[e] = obj[e]), a); }, {});
+    var type = function (e, what) {
+        return (e === null || e === void 0 ? void 0 : e.constructor.name) === what;
+    };
+    var hydrate = function (_a) {
+        var name = _a[0], value = _a[1];
+        return name
+            .split(/\b\.\b/)
+            .reduceRight(function (set, curr) {
+            var _a;
+            return (_a = {}, _a[curr] = set, _a);
+        }, value);
+    };
+    var filter = function (es, what) {
+        return es.filter(function (e) { return type(e, what); });
     };
 
     var reStr = function (re) { return "/" + re.source + "/" + (/\w+$/.exec(re) || ""); };
@@ -90,18 +101,23 @@
     }
     function parse(str, reviver) {
         var iso8061 = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/;
-        var revive = function (key, value) {
-            if (typeof value != "string")
+        try {
+            var revive = function (key, value) {
+                if (typeof value != "string")
+                    return value;
+                if (value.match(iso8061))
+                    return new Date(value);
+                if (value.startsWith("_fn_") || value.startsWith("_re_"))
+                    return new Function("return " + trim(value))();
+                if (value.startsWith("_sm_"))
+                    return Symbol.for("" + /\((\w+)\)/.exec(trim(value))[1]);
                 return value;
-            if (value.match(iso8061))
-                return new Date(value);
-            if (value.startsWith("_fn_") || value.startsWith("_re_"))
-                return new Function("return " + trim(value))();
-            if (value.startsWith("_sm_"))
-                return Symbol.for("" + /\((\w+)\)/.exec(trim(value))[1]);
-            return value;
-        };
-        return JSON.parse(str, reviver || revive);
+            };
+            return JSON.parse(str, reviver || revive);
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
 
     function reflect(obj, newObj, cyclic) {
@@ -176,7 +192,7 @@
         return Epicycle;
     }());
 
-    var decycle = function (base) {
+    function decycle (base) {
         var legend = [];
         var epicycle = new Epicycle();
         var walk = function (current, path) {
@@ -197,18 +213,24 @@
                     }, current instanceof Array ? [] : {});
                 }
             }
-            if (typeof current === "string") {
+            if (typeof current === "string")
                 modified = escapeSpecialChar(current);
-            }
             return modified;
         };
         return {
             legend: legend,
             main: walk(base, []),
         };
-    };
+    }
 
-    var recycle = function (master) {
+    function stringify$1 (value, replacer, space) {
+        var master = decycle(value);
+        var legend = stringify(master.legend);
+        var main = stringify(master.main, generateReplacer(replacer), space);
+        return main !== undefined ? "{\"legend\":" + legend + ",\"main\":" + main + "}" : main;
+    }
+
+    function recycle (master) {
         var walk = function (current, key, parent) {
             var modified = current;
             var index;
@@ -250,22 +272,172 @@
             return master;
         }
         return walk(master.main);
+    }
+
+    function parse$1 (text, reviver) {
+        return recycle(parse(text, generateReviver(reviver)));
+    }
+
+    function memoize (passedFn) {
+        var lastThis;
+        var lastArgs = [];
+        var lastResult;
+        var calledOnce = false;
+        var isEqual = function (newInputs, lastInputs) {
+            if (newInputs.length !== lastInputs.length)
+                return false;
+            for (var i = 0; i < newInputs.length; i++)
+                if (newInputs[i] !== lastInputs[i])
+                    return false;
+            return true;
+        };
+        function memo() {
+            var _a;
+            var newArgs = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                newArgs[_i] = arguments[_i];
+            }
+            var called = calledOnce && lastThis === this;
+            if (called && isEqual(newArgs, lastArgs))
+                return lastResult;
+            lastResult = passedFn.apply(this, newArgs);
+            _a = [true, this, newArgs], calledOnce = _a[0], lastThis = _a[1], lastArgs = _a[2];
+            return lastResult;
+        }
+        return memo;
+    }
+
+    function restock (item, slot) {
+        var induce = function (acc, _a) {
+            var name = _a[0], value = _a[1];
+            return ((acc[name] = value), acc);
+        };
+        Object.keys(item).forEach(function (name) { return delete item[name]; });
+        Object.entries(slot).reduce(induce, item);
+        return item;
+    }
+
+    var merge = function () {
+        var items = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            items[_i] = arguments[_i];
+        }
+        var res = {};
+        items.forEach(function (obj) {
+            for (var key in obj) {
+                var check = obj.hasOwnProperty(key) && type(obj[key], "Object");
+                res[key] = check ? merge(res[key], obj[key]) : obj[key];
+            }
+        });
+        return res;
+    };
+    var unflatten = function (item) {
+        return merge.apply(void 0, Object.entries(item).map(hydrate));
+    };
+    var flatten = function (obj, parent, res) {
+        if (res === void 0) { res = {}; }
+        for (var key in obj) {
+            var propName = parent ? parent + "." + key : key;
+            if (type(obj[key], "Object"))
+                flatten(obj[key], propName, res);
+            else
+                res[propName] = obj[key];
+        }
+        return res;
+    };
+    var deflate = function (list, depth, level) {
+        if (depth === void 0) { depth = Infinity; }
+        if (level === void 0) { level = 1; }
+        return list.reduce(function (acc, item) {
+            var arr = Array.isArray(item) && level < depth;
+            return acc.concat(arr ? deflate(item, depth, ++level) : item);
+        }, []);
+    };
+    var spread = function (item) {
+        var regex = function (symbol) { return new RegExp("\\s*" + symbol + "\\s*"); };
+        var colon = function (item) { return item.split(regex(":")); };
+        var semi = function (item) { return item.split(regex(";")).filter(Boolean); };
+        return semi(item.trim()).map(colon).map(hydrate);
+    };
+    var combine = function () {
+        var list = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            list[_i] = arguments[_i];
+        }
+        var sequence = filter(list, "Object");
+        var series = deflate(filter(list, "String").map(spread));
+        return merge.apply(void 0, sequence.map(unflatten).concat(series));
     };
 
-    var Agbawo = {
-        walker: walker,
+    function inspect (obj) {
+        return Reflect.ownKeys(Object.getPrototypeOf(obj))
+            .concat(Reflect.ownKeys(obj))
+            .reduce(function (a, e) { return ((a[e] = obj[e]), a); }, {});
+    }
+
+    var index = {
         clone: clone,
-        stringify: function (value, replacer, space) {
-            var master = decycle(value);
-            var legend = stringify(master.legend);
-            var main = stringify(master.main, generateReplacer(replacer), space);
-            return main !== undefined ? "{\"legend\":" + legend + ",\"main\":" + main + "}" : main;
-        },
-        parse: function (text, reviver) {
-            return recycle(parse(text, generateReviver(reviver)));
-        },
+        stringify: stringify$1,
+        parse: parse$1,
+        inspect: inspect,
+        /**
+         * @description replaces an object's items without changing the reference
+         * @example
+         * //→ { 'colors.purple': 'bg-purple-500' }
+         * memoize({ color: "pink" }, { "colors.purple": "bg-purple-500" })
+         */
+        memoize: memoize,
+        /**
+         * @description flattens an object separating its key with dots
+         * @example
+         * //→ { 'key3.a.b.c': 2 }
+         * flatten({ key3: { a: { b: { c: 2 } } } });
+         */
+        flatten: flatten,
+        /**
+         * @description unflattens an object back to its nested form
+         * @example
+         * //→ { "user": { "key_value_map": { "CreatedDate": "123424" } } }
+         * unflatten({ 'user.key_value_map.CreatedDate': '123424' });
+         */
+        unflatten: unflatten,
+        /**
+         * @description flattens an array, infinitely or to a depth level
+         * @example
+         * //→ [ 1, 2, 3, [ 4, [ 5 ] ] ]
+         * deflate([1, [2, [3, [4, [5]]]]], 2)
+         */
+        deflate: deflate,
+        /**
+         * @description deep-extends an object recursively
+         * @example
+         * //→ { margin: { top: "mt-2", bottom: "mb-2" } }
+         * merge({ margin: { top: "mt-2" }, { margin: { bottom: "mb-2" } })
+         */
+        merge: merge,
+        /**
+         * @description disintegrates the css object syntax into js objects
+         * @example
+         * //→ [{ margin: { top: "mt-3" } }, { margin: { bottom: "mb-3" } }]
+         * spread("margin.top: mt-3; margin.bottom: mb-3")
+         */
+        spread: spread,
+        /**
+         * @description spreads strings, unflattens objects, then combines
+         * @example
+         * //→ { colors: { purple: 'bg-purple-500', pink: 'bg-pink-500' } }
+         * combine("colors.pink: bg-pink-500", { "colors.purple": "bg-purple-500" })
+         */
+        combine: combine,
+        /**
+         * @description replaces an object's items without changing the reference
+         * @example
+         * //→ { 'colors.purple': 'bg-purple-500' }
+         * restock({ color: "pink" }, { "colors.purple": "bg-purple-500" })
+         */
+        restock: restock,
     };
 
-    return Agbawo;
+    return index;
 
 })));
