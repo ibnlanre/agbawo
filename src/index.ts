@@ -2,7 +2,7 @@ import clone from "./functions/clone";
 import stringify from "./functions/stringify";
 import parse from "./functions/parse";
 import memoize from "./functions/memoize";
-import restock from "./functions/restock";
+import refresh from "./functions/refresh";
 import {
   flatten,
   unflatten,
@@ -64,8 +64,16 @@ export default {
   /**
    * @description replaces an object's items without changing the reference
    * @example
-   * //→ { 'colors.purple': 'bg-purple-500' }
-   * restock({ color: "pink" }, { "colors.purple": "bg-purple-500" })
+   * let u = { x: 1, y: 2, z: 3 };
+   *
+   * //→ { y: 2, z: 3, v: 4, w: 5 }
+   * refresh(u, { remove: "x", restock: { v: 4, w: 5 }});
+   * //→ { x: 1, v: 4, w: 5 }
+   * refresh(u, { remove: ["y", "z"], restock: { v: 4, w: 5 } });
+   * //→ { x: 1, v: 6, w: 3 }
+   * refresh(u, { retain: "x", restock: { v: 6, w: 3 } });
+   * //→ { x: 1, z: 3, v: 5, w: 2 }
+   * refresh(u, { retain: ["x", "z"], restock: { v: 5, w: 2 } });
    */
-  restock,
+  refresh,
 };

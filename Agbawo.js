@@ -1,5 +1,5 @@
 /*!
- * Àgbawo-1.0.2
+ * Àgbawo-1.0.3
  * Copyright (c) 2020 Ridwan Olanrewaju.
  * Licensed under the MIT license.
  */
@@ -308,21 +308,25 @@
         return memo;
     }
 
-    function restock (item, slot, options) {
+    function refresh (item, options) {
         if (options === void 0) { options = {}; }
-        var opts = Object.assign({ exclude: [], only: [] }, options);
+        var opts = Object.assign({ retain: [], remove: [], restock: {} }, options);
         var induce = function (acc, _a) {
             var name = _a[0], value = _a[1];
             return ((acc[name] = value), acc);
         };
         Object.keys(item).forEach(function (name) {
-            if (opts.only.length)
-                opts.only.includes(name) ? delete item[name] : "";
-            if (opts.exclude.includes(name))
+            if (opts.remove.length) {
+                if (opts.remove.includes(name))
+                    delete item[name];
+                else
+                    return;
+            }
+            if (opts.retain.includes(name))
                 return;
             delete item[name];
         });
-        Object.entries(slot).reduce(induce, item);
+        Object.entries(opts.restock).reduce(induce, item);
         return item;
     }
 
@@ -435,10 +439,18 @@
         /**
          * @description replaces an object's items without changing the reference
          * @example
-         * //→ { 'colors.purple': 'bg-purple-500' }
-         * restock({ color: "pink" }, { "colors.purple": "bg-purple-500" })
+         * let u = { x: 1, y: 2, z: 3 };
+         *
+         * //→ { y: 2, z: 3, v: 4, w: 5 }
+         * refresh(u, { remove: "x", restock: { v: 4, w: 5 }});
+         * //→ { x: 1, v: 4, w: 5 }
+         * refresh(u, { remove: ["y", "z"], restock: { v: 4, w: 5 } });
+         * //→ { x: 1, v: 6, w: 3 }
+         * refresh(u, { retain: "x", restock: { v: 6, w: 3 } });
+         * //→ { x: 1, z: 3, v: 5, w: 2 }
+         * refresh(u, { retain: ["x", "z"], restock: { v: 5, w: 2 } });
          */
-        restock: restock,
+        refresh: refresh,
     };
 
     return index;

@@ -2,7 +2,7 @@ import { terser } from "rollup-plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 
 const banner = `/*!
- * Àgbawo-1.0.2
+ * Àgbawo-1.0.3
  * Copyright (c) 2020 Ridwan Olanrewaju.
  * Licensed under the MIT license.
  */`;
