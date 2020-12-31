@@ -1,6 +1,7 @@
 const { expect } = require("chai");
 const decache = require("decache");
-const { stringify, parse, clone, flatten, unflatten } = require("./Agbawo");
+const { it } = require("mocha");
+const { stringify, parse, clone, flatten, unflatten, modify } = require("./Agbawo");
 
 describe("#Agbawo", function () {
   describe("#JSON_methods", function () {
@@ -41,6 +42,14 @@ describe("#Agbawo", function () {
       it("should not have any dots in its key", () => {
         expect(unflatten(flatten(obj))).to.eql(obj);
       })
+    })
+  })
+
+  describe("#Object Modification", () => {
+    let value = { x: 1, y: 2, z: 3 };
+    it("should accept options and modify in place", () => {
+      const test = clone(value);
+      expect(modify(test, { subtract: "x", add: { v: 4, w: 5 } })).to.be.an.instanceof(object)
     })
   })
 
@@ -205,3 +214,42 @@ describe("#Agbawo", function () {
 });
 
 decache("./Agbawo");
+
+/**
+ * @description hydrates strings, unflattens objects, then combines
+ * @example
+ * //→ { colors: { purple: 'bg-purple-500', pink: 'bg-pink-500' } }
+ * combine("colors.pink: bg-pink-500", { "colors.purple": "bg-purple-500" })
+ */
+// export const combine = (...list: (string | object)[]) => {
+//   let sequence = filter(list, "Object").map(unflatten);
+//   let series = filter(list, "String").map(hydrate);
+//   return merge(...sequence.concat(series));
+// };
+
+
+// export const filter = function (es: (string | object)[], what: string): any[] {
+//   return es.filter((e) => type(e, what));
+// };
+
+
+// let d = "greeting: hi";
+// let e = "margin: { bottom: mb-3, left: ml-2 }";
+// let f = "margin.bottom: mb-3; margin.left: ml-2";
+// let g =
+//   "margin: { bottom: mb-3, right: { bottoms_up: down I guess }, left: ml-2 }";
+// let h =
+//   "margin: { bottom: mb-3, left: ml-2 }; colors: { pink: bg-pink-500, purple: bg-purple-500 };";
+// console.log(unflatten( { h: { "j": ["k", "l"] }}))
+
+// localStorage.setItem("userObject", JSON.stringify(userObject));
+// userObject = JSON.parse(localStorage.getItem("userObject"));
+
+
+// //→ { y: 2, z: 3, v: 4, w: 5 }
+// //→ { x: 1, v: 4, w: 5 }
+// console.log(modify(clone(u), { subtract: ["y", "z"], add: { v: 4, w: 5 } }))
+// //→ { x: 1, y: 2, z: 3, v: 6, w: 4 }
+// console.log(modify(clone(u), { clear: false, add: { v: 6, w: 4 } }))
+// //→ { x: 1, z: 3, w: 5 }
+// console.log(modify(clone(u), { clear: true, retain: ["x", "z"], add: { w: 5 } }));

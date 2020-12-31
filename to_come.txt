@@ -1,1 +1,3 @@
-walk, moonwalk, inspect
+in: clone, stringify, parse, inspect, memoize, flatten, unflatten, refresh
+
+walk, moonwalk, inspect, add, subtract, sort

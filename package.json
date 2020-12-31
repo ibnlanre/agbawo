@@ -3,7 +3,9 @@
   "version": "1.0.4",
   "description": "The Swiss-Army knife for working with JS Objects",
   "main": "Agbawo.js",
+  "types": "types",
   "scripts": {
+    "define_type": "tsc --project tsconfig.json --emitDeclarationOnly true --declaration --declarationDir ./",
     "build": "rollup -c",
     "test": "mocha tests"
   },
@@ -32,5 +34,8 @@
     "ts-node": "^9.0.0",
     "tslib": "^2.0.1",
     "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "traverse": "^0.6.6"
   }
 }

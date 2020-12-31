@@ -37,16 +37,11 @@ export const trimSpecialChar = function (value) {
   return value.slice(1);
 };
 
-export const type = function (e, what: string) {
-  return e?.constructor.name === what;
+export const typeOf = function (value, what?: string) {
+  let type = value?.constructor.name.toLowerCase();
+  return what ? type === what : type;
 };
 
-export const hydrate = function ([name, value]: [name: string, value: any]) {
-  return name
-    .split(/\b\.\b/)
-    .reduceRight((set, curr) => ({ [curr]: set }), value);
-};
-
-export const filter = function (es: (string | object)[], what: string): any[] {
-  return es.filter((e) => type(e, what));
-};
+export const isObject = function (value: any) {
+  return typeOf(value, "object")
+}

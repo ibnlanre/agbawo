@@ -1,44 +1,73 @@
-import { hydrate, type, filter } from "../helpers/methods";
+import { typeOf } from "../helpers/methods";
 
-export const merge = (...items: object[]) => {
+function extend(item: object[]) {
   const res = {};
-  items.forEach((obj) => {
+  const insert = function (obj) {
     for (let key in obj) {
-      let check = obj.hasOwnProperty(key) && type(obj[key], "Object");
-      res[key] = check ? merge(res[key], obj[key]) : obj[key];
+      let check = obj.hasOwnProperty(key) && typeOf(obj[key], "object");
+      res[key] = check ? extend([res[key], obj[key]]) : obj[key];
     }
-  });
+  };
+  Array.isArray(item) ? item.forEach(insert) : insert(item);
   return res;
-};
+}
 
-export const unflatten = (item: object) =>
-  merge(...Object.entries(item).map(hydrate));
+export function merge(...item: object[]) {
+  return extend(flatten(item));
+}
 
-export const flatten = (obj: object, parent?: string | object, res = {}) => {
+function assign([name, value]: [name: string, value: any]) {
+  function handleString(set) {
+    set = /(?<={).*(?=})/.exec(set)?.shift() ?? set;
+    return merge(set.split(",").map(hydrate));
+  }
+  function defineChange(set) {
+    return typeOf(set, "object")
+      ? unflatten(set)
+      : typeOf(set, "string") && set.startsWith("{") && set.endsWith("}")
+      ? handleString(set)
+      : set;
+  }
+  const callback = (set, curr) => ({ [curr]: defineChange(set) });
+  return name.split(/\b\.\b/).reduceRight(callback, value);
+}
+
+export function unflatten(item: object) {
+  return merge(Object.entries(item).map(assign));
+}
+
+function deflate(
+  obj: object,
+  symbol?: string,
+  parent?: string | object,
+  res = {}
+) {
+  symbol ??= ".";
   for (let key in obj) {
-    let propName = parent ? parent + "." + key : key;
-    if (type(obj[key], "Object")) flatten(obj[key], propName, res);
+    let propName = parent ? parent + symbol + key : key;
+    if (typeOf(obj[key], "object")) deflate(obj[key], symbol, propName, res);
     else res[propName] = obj[key];
   }
   return res;
-};
+}
 
-export const deflate = (list, depth = Infinity, level = 1) => {
+function dissolve(list, depth = Infinity, level = 1) {
   return list.reduce((acc, item) => {
     let arr = Array.isArray(item) && level < depth;
-    return acc.concat(arr ? deflate(item, depth, ++level) : item);
+    return acc.concat(arr ? dissolve(item, depth, ++level) : item);
   }, []);
-};
+}
 
-export const spread = function (item) {
-  const regex = (symbol: string) => new RegExp(`\\s*${symbol}\\s*`);
-  const colon = (item: string) => item.split(regex(":"));
-  const semi = (item: string) => item.split(regex(";")).filter(Boolean);
-  return semi(item.trim()).map(colon).map(hydrate);
-};
+export function flatten(item, token?) {
+  return Array.isArray(item) ? dissolve(item, token) : deflate(item, token);
+}
 
-export const combine = (...list: (string | object)[]) => {
-  let sequence = filter(list, "Object");
-  let series = deflate(filter(list, "String").map(spread));
-  return merge(...sequence.map(unflatten).concat(series));
-};
+export function hydrate(item: string) {
+  const sym = (symbol: string) => new RegExp(`\\s*${symbol}\\s*`);
+  const colon = (item: string) => {
+    let [name, ...value] = item.split(sym(":"));
+    return [name, value.join(": ")];
+  };
+  const semi = (item: string) => item.split(sym(";")).filter(Boolean);
+  return merge(semi(item.trim()).map(colon).map(assign));
+}
