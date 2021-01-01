@@ -1,0 +1,11 @@
+import { Path } from "../functions/oracle";
+export declare const typeOf: (value: any, what?: string) => any;
+export declare const isObject: (value: any) => any;
+export declare const split: (path: Path) => any;
+export declare const relay: (object: object, symbol: string, depth?: number, parent?: string, result?: {}, level?: number) => {};
+export declare const sizeOf: (word: string, letter?: string | RegExp) => number;
+export declare const trace: (object: object, path: Path, callback?: (Object: any, string: any) => any) => object;
+export declare const assign: ([name, value]: [name: string, value: any]) => any;
+export declare const extend: (item: object[]) => {};
+export declare const deflate: (obj: object, symbol?: string, parent?: string | object, res?: {}) => {};
+export declare const dissolve: (list: any, depth?: number, level?: number) => any;

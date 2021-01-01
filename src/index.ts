@@ -2,8 +2,12 @@ import clone from "./functions/clone";
 import stringify from "./functions/stringify";
 import parse from "./functions/parse";
 import memoize from "./functions/memoize";
-import reset from "./functions/reset";
-import { typeOf, isObject } from "./helpers/methods";
+import { count, sizeOf, typeOf, isObject } from "./helpers/methods";
+import { has, get, set } from "./functions/object";
+import { forEach, map, reduce } from "./functions/object";
+import { walk, moonWalk } from "./functions/object";
+import { paths, spread, sortKeys } from "./functions/object";
+import { del, reset } from "./functions/object";
 import {
   flatten,
   unflatten,
@@ -11,6 +15,7 @@ import {
   hydrate
 } from "./functions/flat";
 import inspect from "./functions/inspect";
+import oracle from "./functions/oracle";
 
 export default {
   clone,
@@ -47,7 +52,7 @@ export default {
    */
   merge,
   /**
-   * @description inflates the read-once object syntax into js objects
+   * @description converts the read-once object syntax into a JS object
    * @example
    * //→ { margin: { top: 'mt-3', bottom: 'mb-1', x: 'ml-2 mr-4' } }
    * hydrate("margin: { top: mt-3, bottom: mb-1 }; margin.x: ml-2 mr-4")

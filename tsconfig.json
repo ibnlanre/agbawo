@@ -1,7 +1,9 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES5",
-    "lib": ["ES2015.Collection"]
-  }
+    "target": "ES5"
+  },
+  "exclude": [
+    "**/*.d.ts"
+  ]
 }

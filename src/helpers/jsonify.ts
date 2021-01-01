@@ -5,7 +5,7 @@ import {
   isSpecialLiteral,
   trimSpecialChar,
   escapeSpecialChar,
-} from "./methods";
+} from "./retrocycle";
 
 const reStr = (re) => `/${re.source}/${/\w+$/.exec(re) || ""}`;
 export const trim = (value) => value.replace(/"/g, "").substring(4);

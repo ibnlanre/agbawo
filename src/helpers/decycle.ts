@@ -1,6 +1,6 @@
 export {};
 
-import { specialChar, shouldPassThrough, escapeSpecialChar } from "./methods";
+import { specialChar, shouldPassThrough, escapeSpecialChar } from "./retrocycle";
 import Epicycle from "./epicycle";
 
 export default function (base) {
