@@ -5,7 +5,7 @@ const areTheyEqual = (newInputs, lastInputs): boolean => {
   return true;
 };
 
-export default function (passedFn, isEqual = areTheyEqual) {
+function memoize(passedFn, isEqual = areTheyEqual) {
   let lastThis: unknown;
   let lastArgs: unknown[] = [];
   let lastResult;
@@ -21,3 +21,5 @@ export default function (passedFn, isEqual = areTheyEqual) {
 
   return memo;
 };
+
+export default memoize;

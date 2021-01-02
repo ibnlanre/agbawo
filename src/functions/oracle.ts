@@ -1,14 +1,20 @@
 import { merge } from "./flat";
-import { has, get, set, update } from "./object";
-import { forEach, map, reduce } from "./object"
-import { walk, moonWalk } from "./object";
-import { paths, spread, sortKeys } from "./object";
-import { del, reset } from "./object"
+import { has, get, set, update } from "./mdoify";
+import { forEach, map, reduce } from "./mdoify"
+import { walk, moonWalk } from "./mdoify";
+import { paths, spread, sortKeys } from "./mdoify";
+import { del, reset } from "./mdoify"
 
 export type Path = string | Array<string>;
 export type callback = (value, path?: Array<string>, object?: object) => any;
 
 interface Agbawo {
+  lastResult: any;
+  lastInput: object;
+  lastThis: Vet;
+}
+
+interface Vet {
   has: (path: Path) => boolean;
   get: (path: Path) => any;
   set: (path: Path, value: any) => object;
@@ -32,59 +38,77 @@ interface Agbawo {
   spread: (symbol?: string, depth?: number) => object;
   sortKeys: () => object;
   paths: () => Array<string[]>;
-  value: () => object;
 }
 
 export default function oracle(object: object): Agbawo {
-  return {
+  let lastResult = undefined;
+  let lastInput = object;
+  let lastThis = {
     has(path) {
-      return has(object, path);
+      lastResult = has(object, path)
+      return this;
     },
     get(path) {
-      return get(object, path);
+      lastResult = get(object, path);
+      return this;
     },
     set(path, value) {
-      return set(object, path, value);
+      lastResult = set(object, path, value);
+      return this;
     },
     update(path, callbackFn) {
-      return update(object, path, callbackFn)
+      lastResult = update(object, path, callbackFn);
+      return this
     },
     del(paths) {
-      return del(object, ...paths);
+      lastResult = del(object, ...paths);
+      return this;
     },
     reset(insert) {
-      return reset(object, insert);
+      lastResult = reset(object, insert);
+      return this;
     },
     forEach(callbackFn) {
-      return forEach(object, callbackFn);
+      lastResult = forEach(object, callbackFn);
+      return this;
     },
     map(callbackFn) {
-      return map(object, callbackFn);
+      lastResult = map(object, callbackFn);
+      return this;
     },
     reduce(callbackFn, initialValue) {
-      return reduce(object, callbackFn, initialValue)
+      lastResult = reduce(object, callbackFn, initialValue);
+      return this;
     },
     walk(callbackFn, depth) {
-      return walk(object, callbackFn, depth);
+      lastResult = walk(object, callbackFn, depth);
+      return this;
     },
     moonWalk(callbackFn, depth) {
-      return moonWalk(object, callbackFn, depth);
+      lastResult = moonWalk(object, callbackFn, depth);
+      return this;
     },
     paths() {
-      return paths(object);
+      lastResult = paths(object);
+      return this;
     },
     merge(...items) {
-      return merge(object, ...items);
+      lastResult = merge(object, ...items);
+      return this;
     },
     spread(symbol, depth) {
-      return spread(object, symbol, depth);
+      lastResult = spread(object, symbol, depth);
+      return this;
     },
     sortKeys() {
-      return sortKeys(object);
+      lastResult = sortKeys(object);
+      return this;
     },
-    value() {
-      return object;
-    },
+  }
+  return {
+    lastResult,
+    lastInput,
+    lastThis
   }
 }
 

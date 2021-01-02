@@ -1,7 +1,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES5"
+    "target": "ES5",
+    "lib": [
+      "ES2020"
+    ]
   },
   "exclude": [
     "**/*.d.ts"

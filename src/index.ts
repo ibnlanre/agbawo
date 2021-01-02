@@ -2,12 +2,12 @@ import clone from "./functions/clone";
 import stringify from "./functions/stringify";
 import parse from "./functions/parse";
 import memoize from "./functions/memoize";
-import { count, sizeOf, typeOf, isObject } from "./helpers/methods";
-import { has, get, set } from "./functions/object";
-import { forEach, map, reduce } from "./functions/object";
-import { walk, moonWalk } from "./functions/object";
-import { paths, spread, sortKeys } from "./functions/object";
-import { del, reset } from "./functions/object";
+import { charCount, sizeOf, toPath, typeOf, isObject } from "./helpers/methods";
+import { has, get, set } from "./functions/mdoify";
+import { forEach, map, reduce } from "./functions/mdoify";
+import { walk, moonWalk } from "./functions/mdoify";
+import { paths, spread, sortKeys } from "./functions/mdoify";
+import { del, reset } from "./functions/mdoify";
 import {
   flatten,
   unflatten,

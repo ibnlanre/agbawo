@@ -11,7 +11,7 @@ export const isObject = function (value: any) {
   return typeOf(value, "object");
 };
 
-export const split = function (path: Path) {
+export const toPath = function (path: Path) {
   const str = (e) => e.toString().split(".");
   return Array.isArray(path) ? flatten(path.map(str)) : path.split(".");
 };
@@ -33,8 +33,8 @@ export const relay = function (
   return result;
 };
 
-export const count = function (word: string, letter?: string | RegExp) {
-  return word.split("").filter((e) => e.match(letter ?? e)).length;
+export const charCount = function (word: string, char?: string | RegExp) {
+  return word.split("").filter((e) => e.match(char ?? e)).length;
 };
 
 export const sizeOf = function (object: Object) {
@@ -46,8 +46,8 @@ export const trace = function (
   path: Path,
   callback?: (Object, string) => any
 ): object {
-  return split(path).reduce(function (acc, key, index) {
-    return split(path).length == index + 1
+  return toPath(path).reduce(function (acc, key, index) {
+    return toPath(path).length == index + 1
       ? (callback(acc, key), object)
       : acc[key];
   }, object);

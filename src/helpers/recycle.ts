@@ -5,7 +5,7 @@ import {
   isSpecialLiteral,
   shouldPassThrough,
   trimSpecialChar,
-} from "./retrocycle";
+} from "./special";
 
 import { trim } from "./jsonify";
 

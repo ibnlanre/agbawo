@@ -1,4 +1,4 @@
-import { get } from "./object";
+import { get } from "./mdoify";
 
 type key = string | (number | string)[];
 export default function reset(
