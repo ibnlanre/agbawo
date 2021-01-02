@@ -4,8 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 [![build status](https://img.shields.io/travis/ibnlanre/Agbawo.svg)](https://travis-ci.org/ibnlanre/Agbawo)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-f8bc45.svg)](https://github.com/prettier/prettier)
-![version](https://img.shields.io/badge/version-1.0.4-blue) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
-[![Twitter](https://img.shields.io/twitter/follow/ibnlanre?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=ibnlanre)
+![version](https://img.shields.io/badge/version-1.1.0-blue) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 ---
 
@@ -51,9 +50,34 @@ const { clone } = require("@ibnlanre/agbawo");
 const inspect = require("@ibnlanre/agbawo").inspect;
 
 // Walkthrough
-stringify(object); //-> cyclic object/symbol support
-parse(stringify, replacer); //!-> it replaces the default
-inspect(object); //-> a shallow tree walker
+clone(object) //-> clone almost any JS type
+stringify(object); //-> with cyclic object/symbol support
+parse(stringify, replacer); //-> for use with stringify
+inspect(object); //-> depth-indented tree for console logging
+print(object, indent); //-> similar to NodeJS util.inspect
+typeOf(value, what?) //-> returns the js type in lowercase
+isObject(value) //-> checks in the value is actually a plain object
+memoize(func) //-> returns last result for similar arguments
+flatten(object) //-> flattens an array or object recursively
+unflatten(object) //-> unflattens a flattened object
+merge(object) //-> combines two or more objects
+hydrate(string) //-> converts a read-once string to an object
+reset(object) //-> clears an object without changing its reference
+has(object, path) //-> checks if an object has a specific key
+get(object, path) //-> returns the value of an object key
+set(object, path, value) //-> creates or set an object's values
+forEach(object, callbackFn, thisArg) //-> similar to the Array.forEach
+map(object, callbackFn, thisArg) //-> similar to Array.map
+reduce(object, callbackFn, initialValue) //-> similar to Array.reduce
+walk(object, callbackFn, depth) //-> walks through each node of an object
+moonWalk(object, callbackFn, depth) //-> walks in the opposite direction
+paths(object) //-> returns all the node paths in an object
+spread(object, symbol?, depth?) //-> get object with all possible paths
+sortKeys(object) //-> sort object based on the key values
+del(object, paths) //-> delete nodes in an object
+update(object, path, callbackFn, thisArg) //-> update a node functionally
+wrap(object) //-> wrap an object with these methods
+util //-> exposes other methods for use during manipulation
 ```
 
 ## JSON Methods
@@ -256,5 +280,7 @@ console.log(clone(a) === a); //-> true
 
 - [Louis Buchbinder](https://github.com/louisbuchbinder) -> [cyclical-json](https://github.com/louisbuchbinder/cyclical-json)
 - [Royaltm](https://github.com/royaltm) -> [function cloning](https://stackoverflow.com/questions/1833588/javascript-clone-a-function)
-- [Vadim Kiryukhin](https://github.com/vkiryukhin) -> [json-fn](https://github.com/vkiryukhin/jsonfn)
+- [Vadim Kiryukhin](https://github.com/vkiryukhin) -> [jsonfn](https://github.com/vkiryukhin/jsonfn)
 - [Alex Reardon](https://github.com/alexreardon) -> [memoize-one](https://github.com/alexreardon/memoize-one)
+- [Luke P](https://github.com/notatestuser) -> [treeify](https://github.com/notatestuser/treeify)
+- [Vadim Kiryukhin](https://github.com/vkiryukhin) -> [vkbeautify](https://github.com/vkiryukhin/vkBeautify)

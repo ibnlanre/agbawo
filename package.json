@@ -1,9 +1,9 @@
 {
   "name": "@ibnlanre/agbawo",
-  "version": "1.0.4",
-  "description": "The Swiss-Army knife for working with JS Objects",
+  "version": "1.1.0",
+  "description": "The Swiss-Army knife for object manipulation",
   "main": "Agbawo.js",
-  "types": "types",
+  "types": "types/index.d.ts",
   "scripts": {
     "define_type": "tsc --project tsconfig.json --emitDeclarationOnly true --declaration --declarationDir ./types",
     "build": "rollup -c",

@@ -7,9 +7,9 @@ import {
   escapeSpecialChar,
 } from "./special";
 
-const reStr = (re) => `/${re.source}/${/\w+$/.exec(re) || ""}`;
-export const trim = (value) => value.replace(/"/g, "").substring(4);
-export const fnStr = (fn) => (fn.name ? fn.name + "=" : "") + fn;
+const reStr = (re) => "/" + re.source + "/" + /\w+$/.exec(<string>re) || "";
+export const trim = (value: string) => value.replace(/"/g, "").substring(4);
+export const fnStr = (fn: Function) => (fn.name ? fn.name + "=" : "") + fn;
 
 export const generateReplacer = function (replacer) {
   if (typeof replacer !== "function") {
@@ -38,13 +38,13 @@ export const generateReviver = function (reviver) {
 export function stringify(obj, replacer?, space?) {
   const inplace = (key, value) => {
     if (!value) return value;
-    if (key) if (value instanceof RegExp) return "_re_" + reStr(value);
-    if (value instanceof Function) return "_fn_" + fnStr(value);
-    if (typeof value === "symbol") return "_sm_" + value.toString();
+    if (key) if (value instanceof RegExp) return "__re_" + reStr(value);
+    if (value instanceof Function) return "__fn_" + fnStr(value);
+    if (typeof value === "symbol") return "__sm_" + value.toString();
     if (value.constructor.name === "Object") {
       Reflect.ownKeys(value).forEach((key) => {
         if (typeof key === "symbol") {
-          value["_sm_" + key.toString()] = value[key];
+          value["__sm_" + key.toString()] = value[key];
         }
       });
     }
@@ -59,9 +59,9 @@ export function parse(str, reviver?) {
     const revive = function (key, value) {
       if (typeof value != "string") return value;
       if (value.match(iso8061)) return new Date(value);
-      if (value.startsWith("_fn_") || value.startsWith("_re_"))
+      if (value.startsWith("__fn_") || value.startsWith("__re_"))
         return new Function(`return ${trim(value)}`)();
-      if (value.startsWith("_sm_"))
+      if (value.startsWith("__sm_"))
         return Symbol.for(`${/\((\w+)\)/.exec(trim(value))[1]}`);
       return value;
     };

@@ -1,5 +1,5 @@
-import { flatten, hydrate, merge, unflatten } from "../functions/flat";
-import { Path } from "../functions/oracle";
+import { flatten } from "../functions/flat";
+import { Path } from "../functions/wrapper";
 
 export const typeOf = function (value, what?: string) {
   let make = value?.constructor.name.toLowerCase()
@@ -11,10 +11,9 @@ export const isObject = function (value: any) {
   return typeOf(value, "object");
 };
 
-export const toPath = function (path: Path) {
-  const str = (e) => e.toString().split(".");
-  return Array.isArray(path) ? flatten(path.map(str)) : path.split(".");
-};
+export const getRef = function (object: object, key: string) {
+  return object[key.replace("__ref_", "")]
+}
 
 export const relay = function (
   object: object,
@@ -22,13 +21,16 @@ export const relay = function (
   depth = Infinity,
   parent?: string,
   result = {},
-  level = 1
+  level = 1,
+  cyclic = new Map()
 ) {
   for (let key in object) {
     let propName = parent ? parent + symbol + key : key;
-    result[propName] = object[key];
-    if (typeOf(object[key], "object") && level < depth)
-      relay(object[key], symbol, depth, propName, result, ++level);
+    result[propName] = cyclic.get(object[key]) ?? object[key];
+    if (typeOf(object[key], "object") && !cyclic.has(object[key]) && level < depth) {
+      cyclic.set(object[key], "__ref_" + key);
+      relay(object[key], symbol, depth, propName, result, ++level, cyclic);
+    }
   }
   return result;
 };
@@ -40,34 +42,6 @@ export const charCount = function (word: string, char?: string | RegExp) {
 export const sizeOf = function (object: Object) {
   return Array.isArray(object) ? object.length : Object.keys(object).length;
 }
-
-export const trace = function (
-  object: object,
-  path: Path,
-  callback?: (Object, string) => any
-): object {
-  return toPath(path).reduce(function (acc, key, index) {
-    return toPath(path).length == index + 1
-      ? (callback(acc, key), object)
-      : acc[key];
-  }, object);
-};
-
-export const assign = function ([name, value]: [name: string, value: any]) {
-  function handleString(set) {
-    set = /(?<={).*(?=})/.exec(set)?.shift() ?? set;
-    return merge(set.split(",").map(hydrate));
-  }
-  function defineChange(set) {
-    return typeOf(set, "object")
-      ? unflatten(set)
-      : typeOf(set, "string") && set.startsWith("{") && set.endsWith("}")
-      ? handleString(set)
-      : set;
-  }
-  const callback = (set, curr) => ({ [curr]: defineChange(set) });
-  return name.split(/\b\.\b/).reduceRight(callback, value);
-};
 
 export const extend = function (item: object[]) {
   const res = {};
@@ -96,7 +70,7 @@ export const deflate = function (
   return res;
 };
 
-export const dissolve = function (list, depth = Infinity, level = 1) {
+export const dissolve = function (list: Array<any>, depth = Infinity, level = 1) {
   return list.reduce((acc, item) => {
     let arr = Array.isArray(item) && level < depth;
     return acc.concat(arr ? dissolve(item, depth, ++level) : item);

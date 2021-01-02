@@ -1,16 +1,17 @@
 import { merge } from "./flat";
-import { has, get, set, update } from "./mdoify";
-import { forEach, map, reduce } from "./mdoify"
-import { walk, moonWalk } from "./mdoify";
-import { paths, spread, sortKeys } from "./mdoify";
-import { del, reset } from "./mdoify"
+import { has, get, set, update } from "./modify";
+import { forEach, map, reduce } from "./modify"
+import { walk, moonWalk } from "./modify";
+import { paths, spread, sortKeys } from "./modify";
+import { del, reset } from "./modify"
+import print from "./print";
 
 export type Path = string | Array<string>;
 export type callback = (value, path?: Array<string>, object?: object) => any;
 
 interface Agbawo {
   lastResult: any;
-  lastInput: object;
+  lastValue: object;
   lastThis: Vet;
 }
 
@@ -35,14 +36,15 @@ interface Vet {
   walk: (callbackFn?: callback, depth?: number) => void;
   moonWalk: (callbackFn?: callback, depth?: number) => void;
   merge: (...items) => object;
+  print: () => string;
   spread: (symbol?: string, depth?: number) => object;
   sortKeys: () => object;
   paths: () => Array<string[]>;
 }
 
-export default function oracle(object: object): Agbawo {
+export default function wrap(object: object): Agbawo {
   let lastResult = undefined;
-  let lastInput = object;
+  let lastValue = object;
   let lastThis = {
     has(path) {
       lastResult = has(object, path)
@@ -96,6 +98,10 @@ export default function oracle(object: object): Agbawo {
       lastResult = merge(object, ...items);
       return this;
     },
+    print() {
+      lastResult = print(object);
+      return this;
+    },
     spread(symbol, depth) {
       lastResult = spread(object, symbol, depth);
       return this;
@@ -107,8 +113,7 @@ export default function oracle(object: object): Agbawo {
   }
   return {
     lastResult,
-    lastInput,
+    lastValue,
     lastThis
   }
 }
-

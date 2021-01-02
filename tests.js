@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const decache = require("decache");
 const { it } = require("mocha");
-const { stringify, parse, clone, flatten, unflatten, modify } = require("./Agbawo");
+const { stringify, parse, clone, flatten, unflatten, reset } = require("./Agbawo");
 
 describe("#Agbawo", function () {
   describe("#JSON_methods", function () {
@@ -49,7 +49,7 @@ describe("#Agbawo", function () {
     let value = { x: 1, y: 2, z: 3 };
     it("should accept options and modify in place", () => {
       const test = clone(value);
-      expect(modify(test, { subtract: "x", add: { v: 4, w: 5 } })).to.be.an.instanceof(object)
+      expect(reset(test, { v: 4, w: 5 })).to.be.an("object")
     })
   })
 

@@ -1,6 +1,11 @@
 export declare type Path = string | Array<string>;
 export declare type callback = (value: any, path?: Array<string>, object?: object) => any;
 interface Agbawo {
+    lastResult: any;
+    lastValue: object;
+    lastThis: Vet;
+}
+interface Vet {
     has: (path: Path) => boolean;
     get: (path: Path) => any;
     set: (path: Path, value: any) => object;
@@ -13,10 +18,10 @@ interface Agbawo {
     walk: (callbackFn?: callback, depth?: number) => void;
     moonWalk: (callbackFn?: callback, depth?: number) => void;
     merge: (...items: any[]) => object;
+    print: () => string;
     spread: (symbol?: string, depth?: number) => object;
     sortKeys: () => object;
     paths: () => Array<string[]>;
-    value: () => object;
 }
-export default function oracle(object: object): Agbawo;
+export default function wrap(object: object): Agbawo;
 export {};

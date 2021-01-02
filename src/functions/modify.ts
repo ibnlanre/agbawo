@@ -1,6 +1,6 @@
-import { charCount, relay, toPath, trace } from "../helpers/methods";
-import { flatten, unflatten } from "./flat";
-import type { callback, Path } from "./oracle";
+import { charCount, relay } from "../helpers/methods";
+import { flatten, unflatten, toPath, trace } from "./flat";
+import type { callback, Path } from "./wrapper";
 
 export function spread(object: object, symbol = ".", depth?: number): object {
   return relay(object, symbol, depth);
@@ -17,9 +17,10 @@ export function set(object: object, path: Path, value: any) {
 export function update(
   object: object,
   path: Path,
-  callbackFn: (value, key, object) => any
+  callbackFn: (value, key, object) => any,
+  thisArg?: any
 ): object {
-  const place = (acc, key) => (callbackFn(acc[key], key, object));
+  const place = (acc, key) => callbackFn.apply(thisArg, [acc[key], key, object]);
   return trace(object, path, place);
 }
 
@@ -34,23 +35,23 @@ export function del(object: object, ...paths: Array<Path>): object {
 
 export function walk(
   object: object,
-  callbackFn: callback,
+  callbackFn?: callback,
   depth = Infinity
 ): void {
   Object.entries(spread(object)).forEach(function ([key, value]) {
-    if (charCount(key) < depth) callbackFn(value, toPath(key), object);
+    if (charCount(key, /\w/) <= depth) callbackFn(value, toPath(key), object);
   });
 }
 
 export function moonWalk(
   object: object,
-  callbackFn: callback,
+  callbackFn?: callback,
   depth = Infinity
 ): void {
   Object.entries(spread(object))
     .reverse()
     .forEach(function ([key, value]) {
-      if (charCount(key) < depth) callbackFn(value, toPath(key), object);
+      if (charCount(key, /w/) <= depth) callbackFn(value, toPath(key), object);
     });
 }
 
@@ -62,15 +63,15 @@ export function sortKeys(object: object): object {
   );
 }
 
-export function forEach(object: object, callbackFn: callback): void {
+export function forEach(object: object, callbackFn: callback, thisArg?: any): void {
   Object.entries(object).forEach(([key, value]) =>
-    callbackFn(value, toPath(key), object)
+    callbackFn.apply(thisArg, [value, toPath(key), object])
   );
 }
 
-export function map(object: object, callbackFn: callback): object {
+export function map(object: object, callbackFn: callback, thisArg?: any): object {
   Object.entries(object).forEach(function ([key, value]) {
-    return set(object, key, callbackFn(value, toPath(key), object));
+    return set(object, key, callbackFn.apply(thisArg, [value, toPath(key), object]));
   });
   return object;
 }
@@ -80,8 +81,8 @@ export function reduce(
   callbackFn: (
     previousValue: any,
     currentValue: any,
-    currentPath: Array<string>,
-    object: object
+    currentPath?: Array<string>,
+    object?: object
   ) => any,
   initialValue?: Object
 ): Object {
